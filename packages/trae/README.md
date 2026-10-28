@@ -124,6 +124,13 @@ agent's `POST https://trae-api-cn.mchost.guru/api/agent/v3/llm_utils_chat`:
   error and `[DONE]`, with no finish.
 - **Tools:**
   - The tools go natively in `tools`, with `parameters` as a JSON string.
+  - For a Kimi (Moonshot) model the tools' schemas are first rewritten for
+    Moonshot's "moonshot flavored json schema", which Trae's 4027 "tool call
+    failed" quotes when it refuses them: an `enum` or `const` with no `type`
+    gets the one its values have, a `$ref` beside a `type` and a `type` beside
+    an `anyOf` are written as Kimi holds them (the same rules as kimi-work's).
+    The request's own tools are not changed, and a schema Kimi takes as it is
+    goes byte for byte. Other models' tools go as they are.
     A past call goes back as the turn Trae made it: an assistant
     `tool_calls` message carrying it (each call
     `{id, type: "function", function_call: {name, arguments}}`) and a
